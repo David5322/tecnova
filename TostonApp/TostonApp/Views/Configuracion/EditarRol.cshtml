@@ -1,0 +1,45 @@
+﻿@model TostonApp.Models.ViewModels.RolFormVM
+@{
+    ViewData["Title"] = "Editar rol";
+}
+
+<div class="max-w-2xl space-y-5">
+    <div>
+        <h1 class="text-2xl font-bold text-slate-900">Editar rol</h1>
+        <p class="mt-1 text-sm text-slate-500">Actualiza nombre y descripción.</p>
+    </div>
+
+    <form asp-action="EditarRol" method="post" class="space-y-4">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+
+        <div>
+            <label class="text-sm font-semibold text-slate-700">Nombre</label>
+            <input asp-for="Name"
+                   class="mt-1 w-full rounded-2xl border border-green-100 px-4 py-3 text-sm outline-none focus:border-green-300 focus:ring-4 focus:ring-green-100" />
+            <span asp-validation-for="Name" class="mt-1 block text-xs text-red-600"></span>
+        </div>
+
+        <div>
+            <label class="text-sm font-semibold text-slate-700">Descripción</label>
+            <textarea asp-for="Descripcion" rows="3"
+                      class="mt-1 w-full rounded-2xl border border-green-100 px-4 py-3 text-sm outline-none focus:border-green-300 focus:ring-4 focus:ring-green-100"></textarea>
+            <span asp-validation-for="Descripcion" class="mt-1 block text-xs text-red-600"></span>
+        </div>
+
+        <div class="flex justify-end gap-2">
+            <a asp-action="Roles"
+               class="rounded-2xl border border-green-100 bg-white px-5 py-3 text-sm font-semibold text-slate-700 hover:bg-green-50">
+                Volver
+            </a>
+            <button type="submit"
+                    class="rounded-2xl bg-green-600 px-5 py-3 text-sm font-semibold text-white hover:bg-green-700">
+                Guardar cambios
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

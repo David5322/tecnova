@@ -1,0 +1,77 @@
+﻿@using TostonApp.Security
+@inject IPermisosService Permisos
+@{
+    ViewData["Title"] = "Configuración";
+}
+
+<div class="space-y-6">
+    <div>
+        <h1 class="text-2xl font-bold text-slate-900">Configuración</h1>
+        <p class="mt-1 text-sm text-slate-500">
+            Administra roles, permisos, usuarios y accesos dinámicos.
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        @if (await Permisos.CanAsync(User, "CONFIG_GESTIONAR_ROLES"))
+        {
+            <a asp-action="Roles"
+               class="group rounded-3xl border border-green-100 bg-white p-5 shadow-sm hover:bg-green-50">
+                <div class="flex items-center gap-3">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-green-600 text-white">
+                        ⚙️
+                    </div>
+                    <div>
+                        <div class="text-sm font-semibold text-slate-900 group-hover:text-green-800">Roles</div>
+                        <div class="text-xs text-slate-500">Crear, editar y eliminar roles</div>
+                    </div>
+                </div>
+            </a>
+        }
+
+        @if (await Permisos.CanAsync(User, "USUARIOS_VER"))
+        {
+            <a asp-action="Usuarios"
+               class="group rounded-3xl border border-green-100 bg-white p-5 shadow-sm hover:bg-green-50">
+                <div class="flex items-center gap-3">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-green-600 text-white">
+                        👥
+                    </div>
+                    <div>
+                        <div class="text-sm font-semibold text-slate-900 group-hover:text-green-800">Usuarios</div>
+                        <div class="text-xs text-slate-500">Estado, roles y permisos</div>
+                    </div>
+                </div>
+            </a>
+        }
+
+        @if (await Permisos.CanAsync(User, "CONFIG_GESTIONAR_PERMISOS"))
+        {
+            <div class="rounded-3xl border border-green-100 bg-white p-5 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-green-600 text-white">
+                        🛡️
+                    </div>
+                    <div>
+                        <div class="text-sm font-semibold text-slate-900">Permisos</div>
+                        <div class="text-xs text-slate-500">
+                            Se gestionan por rol y override por usuario
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 text-xs text-slate-500">
+                    Tip: entra a <span class="font-semibold text-slate-700">Roles</span> y asigna permisos en “Permisos”.
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="rounded-3xl border border-green-100 bg-green-50 p-5">
+        <div class="text-sm font-semibold text-green-900">¿Cómo funciona?</div>
+        <ul class="mt-2 list-disc pl-5 text-sm text-green-900/80 space-y-1">
+            <li><span class="font-semibold">Roles</span> otorgan permisos (RolesPermisos).</li>
+            <li><span class="font-semibold">Overrides</span> por usuario (UsuariosPermisos) pueden permitir/denegar.</li>
+            <li>El menú y acciones se habilitan según <span class="font-semibold">Policy: PERMISO:CODIGO</span>.</li>
+        </ul>
+    </div>
+</div>

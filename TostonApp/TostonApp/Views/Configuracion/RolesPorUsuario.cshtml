@@ -1,0 +1,66 @@
+﻿@model TostonApp.Models.ViewModels.UsuarioRolVM
+@{
+    ViewData["Title"] = "Roles por usuario";
+}
+
+<div class="max-w-3xl space-y-5">
+    <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">Roles por usuario</h1>
+            <p class="mt-1 text-sm text-slate-500">
+                <span class="font-semibold text-slate-800">@Model.Email</span>
+                @if (!string.IsNullOrWhiteSpace(Model.NombreCompleto))
+                {
+                    <span class="text-slate-500">• @Model.NombreCompleto</span>
+                }
+            </p>
+        </div>
+
+        <a asp-action="Usuarios"
+           class="rounded-2xl border border-green-100 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-green-50">
+            Volver
+        </a>
+    </div>
+
+    <form asp-action="RolesPorUsuario" method="post" class="space-y-4">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="UsuarioId" />
+
+        <div class="rounded-3xl border border-green-100 bg-white shadow-sm">
+            <div class="border-b border-green-100 p-4">
+                <div class="text-sm font-semibold text-slate-900">Selecciona roles</div>
+                <div class="text-xs text-slate-500">Se guardan como IDs de rol.</div>
+            </div>
+
+            <div class="p-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                @foreach (var r in Model.RolesDisponibles)
+                {
+                    <label class="flex items-center gap-3 rounded-2xl border border-green-100 bg-green-50/30 p-3 hover:bg-green-50">
+                        <!-- ✅ name EXACTO: RolesSeleccionados -->
+                        <input type="checkbox"
+                               name="RolesSeleccionados"
+                               value="@r.RolId"
+                               @(r.Seleccionado ? "checked" : "")
+                               class="h-5 w-5 rounded border-green-300 text-green-600" />
+
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold text-slate-900">@r.Name</div>
+                            <div class="text-xs text-slate-500">ID: @r.RolId</div>
+                        </div>
+                    </label>
+                }
+            </div>
+        </div>
+
+        <div class="flex justify-end gap-2">
+            <a asp-action="Usuarios"
+               class="rounded-2xl border border-green-100 bg-white px-5 py-3 text-sm font-semibold text-slate-700 hover:bg-green-50">
+                Cancelar
+            </a>
+            <button type="submit"
+                    class="rounded-2xl bg-green-600 px-5 py-3 text-sm font-semibold text-white hover:bg-green-700">
+                Guardar roles
+            </button>
+        </div>
+    </form>
+</div>

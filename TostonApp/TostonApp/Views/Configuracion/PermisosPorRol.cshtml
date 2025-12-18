@@ -1,0 +1,65 @@
+﻿@model TostonApp.Models.ViewModels.RolPermisosVM
+@{
+    ViewData["Title"] = "Permisos por rol";
+}
+
+<div class="space-y-5">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">Permisos por rol</h1>
+            <p class="mt-1 text-sm text-slate-500">
+                Rol: <span class="font-semibold text-slate-800">@Model.NombreRol</span>
+            </p>
+        </div>
+
+        <a asp-action="Roles"
+           class="rounded-2xl border border-green-100 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-green-50">
+            Volver a roles
+        </a>
+    </div>
+
+    <form asp-action="PermisosPorRol" method="post" class="space-y-4">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="RolId" />
+        <input type="hidden" asp-for="NombreRol" />
+
+        <div class="rounded-3xl border border-green-100 bg-white shadow-sm">
+            <div class="border-b border-green-100 p-4">
+                <div class="text-sm font-semibold text-slate-900">Selecciona permisos</div>
+                <div class="text-xs text-slate-500">
+                    Al guardar, el rol recibirá exactamente los permisos seleccionados.
+                </div>
+            </div>
+
+            <div class="p-4">
+                <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                    @for (int i = 0; i < Model.Permisos.Count; i++)
+                    {
+                        <label class="flex items-start gap-3 rounded-2xl border border-green-100 bg-green-50/30 p-3 hover:bg-green-50">
+                            <input asp-for="Permisos[i].Asignado" class="mt-1 h-5 w-5 rounded border-green-300 text-green-600" />
+                            <div>
+                                <div class="text-sm font-semibold text-slate-900">@Model.Permisos[i].Codigo</div>
+                                <div class="text-xs text-slate-600">@Model.Permisos[i].Descripcion</div>
+                            </div>
+
+                            <input type="hidden" asp-for="Permisos[i].PermisoId" />
+                            <input type="hidden" asp-for="Permisos[i].Codigo" />
+                            <input type="hidden" asp-for="Permisos[i].Descripcion" />
+                        </label>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-end gap-2">
+            <a asp-action="Roles"
+               class="rounded-2xl border border-green-100 bg-white px-5 py-3 text-sm font-semibold text-slate-700 hover:bg-green-50">
+                Cancelar
+            </a>
+            <button type="submit"
+                    class="rounded-2xl bg-green-600 px-5 py-3 text-sm font-semibold text-white hover:bg-green-700">
+                Guardar permisos
+            </button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,229 @@
+﻿@model IEnumerable<TostonApp.Models.Dominio.Producto>
+@using System.Globalization
+@using TostonApp.Security
+@inject IPermisosService Permisos
+
+@{
+    ViewData["Title"] = "Productos";
+    var culture = new CultureInfo("es-CO");
+}
+
+<div class="flex flex-col gap-5">
+    <!-- Header -->
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">Productos</h1>
+            <p class="mt-1 text-sm text-slate-500">
+                Gestión de inventario y visibilidad para clientes (según permisos).
+            </p>
+        </div>
+
+        <div class="flex items-center gap-2">
+            @if (await Permisos.CanAsync(User, "PRODUCTOS_CREAR"))
+            {
+                <a asp-action="Create"
+                   class="inline-flex items-center gap-2 rounded-2xl bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-700">
+                    <!-- icon: plus -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Nuevo producto
+                </a>
+            }
+
+            <a asp-controller="Home" asp-action="Index"
+               class="inline-flex items-center gap-2 rounded-2xl border border-green-100 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-green-50">
+                <!-- icon: home -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75V19.5A2.25 2.25 0 0 0 6.75 21.75h10.5A2.25 2.25 0 0 0 19.5 19.5V9.75" />
+                </svg>
+                Inicio
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick stats -->
+    @{
+        var total = Model?.Count() ?? 0;
+        var activos = Model?.Count(x => x.Activo) ?? 0;
+        var visibles = Model?.Count(x => x.VisibleParaClientes) ?? 0;
+    }
+
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div class="rounded-2xl border border-green-100 bg-white p-4 shadow-sm">
+            <div class="text-xs font-semibold text-slate-500">Total</div>
+            <div class="mt-1 text-2xl font-bold text-slate-900">@total</div>
+        </div>
+        <div class="rounded-2xl border border-green-100 bg-white p-4 shadow-sm">
+            <div class="text-xs font-semibold text-slate-500">Activos</div>
+            <div class="mt-1 text-2xl font-bold text-slate-900">@activos</div>
+        </div>
+        <div class="rounded-2xl border border-green-100 bg-white p-4 shadow-sm">
+            <div class="text-xs font-semibold text-slate-500">Visibles a clientes</div>
+            <div class="mt-1 text-2xl font-bold text-slate-900">@visibles</div>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-hidden rounded-3xl border border-green-100 bg-white shadow-sm">
+        <div class="flex flex-col gap-3 border-b border-green-100 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div class="flex items-center gap-2">
+                <span class="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-green-600 text-white">
+                    <!-- icon: squares -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75h7.5v7.5h-7.5v-7.5ZM12.75 3.75h7.5v7.5h-7.5v-7.5ZM3.75 12.75h7.5v7.5h-7.5v-7.5ZM12.75 12.75h7.5v7.5h-7.5v-7.5Z" />
+                    </svg>
+                </span>
+                <div>
+                    <div class="text-sm font-semibold text-slate-900">Listado</div>
+                    <div class="text-xs text-slate-500">Acciones según permisos</div>
+                </div>
+            </div>
+
+            <div class="text-xs text-slate-500">
+                Tip: usa <span class="font-semibold text-slate-700">Visible</span> para controlar qué ve el cliente.
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-left text-sm">
+                <thead class="bg-green-50 text-xs font-semibold uppercase tracking-wide text-green-900/80">
+                    <tr>
+                        <th class="px-4 py-3">ID</th>
+                        <th class="px-4 py-3">Nombre</th>
+                        <th class="px-4 py-3">Descripción</th>
+                        <th class="px-4 py-3">Precio</th>
+                        <th class="px-4 py-3">Estado</th>
+                        <th class="px-4 py-3">Visible</th>
+                        <th class="px-4 py-3 text-right">Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody class="divide-y divide-green-50">
+                    @foreach (var p in Model)
+                    {
+                        <tr class="hover:bg-green-50/40">
+                            <td class="px-4 py-3 font-semibold text-slate-800">#@p.Id</td>
+
+                            <td class="px-4 py-3">
+                                <div class="font-semibold text-slate-900">@p.Nombre</div>
+                                <div class="mt-0.5 text-xs text-slate-500">
+                                    @(p.Activo ? "Disponible" : "Inactivo")
+                                </div>
+                            </td>
+
+                            <td class="px-4 py-3 text-slate-600">
+                                @if (!string.IsNullOrWhiteSpace(p.Descripcion))
+                                {
+                                    <div class="line-clamp-2 max-w-[420px]">@p.Descripcion</div>
+                                }
+                                else
+                                {
+                                    <span class="text-slate-400">Sin descripción</span>
+                                }
+                            </td>
+
+                            <td class="px-4 py-3 font-semibold text-slate-900">
+                                @p.Precio.ToString("C0", culture)
+                            </td>
+
+                            <td class="px-4 py-3">
+                                @if (p.Activo)
+                                {
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-800">
+                                        <span class="h-1.5 w-1.5 rounded-full bg-green-600"></span>
+                                        Activo
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
+                                        <span class="h-1.5 w-1.5 rounded-full bg-slate-500"></span>
+                                        Inactivo
+                                    </span>
+                                }
+                            </td>
+
+                            <td class="px-4 py-3">
+                                @if (p.VisibleParaClientes)
+                                {
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
+                                        👁 Visible
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">
+                                        🔒 Oculto
+                                    </span>
+                                }
+                            </td>
+
+                            <td class="px-4 py-3">
+                                <div class="flex items-center justify-end gap-2">
+                                    <a asp-action="Details" asp-route-id="@p.Id"
+                                       class="rounded-xl border border-green-100 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-green-50">
+                                        Ver
+                                    </a>
+
+                                    @if (await Permisos.CanAsync(User, "PRODUCTOS_EDITAR"))
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@p.Id"
+                                           class="rounded-xl border border-green-100 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-green-50">
+                                            Editar
+                                        </a>
+
+                                        <form asp-action="ToggleVisible" asp-route-id="@p.Id" method="post" class="inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit"
+                                                    class="rounded-xl border border-green-100 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-green-50">
+                                                @(p.VisibleParaClientes ? "Ocultar" : "Mostrar")
+                                            </button>
+                                        </form>
+                                    }
+
+                                    @if (await Permisos.CanAsync(User, "PRODUCTOS_ELIMINAR"))
+                                    {
+                                        <a asp-action="Delete" asp-route-id="@p.Id"
+                                           class="rounded-xl border border-red-100 bg-white px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-50">
+                                            Eliminar
+                                        </a>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @if (!(Model?.Any() ?? false))
+        {
+            <div class="p-6 text-center">
+                <div class="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-2xl bg-green-100 text-green-700">📦</div>
+                <div class="text-sm font-semibold text-slate-900">No hay productos</div>
+                <div class="text-xs text-slate-500">Crea el primer producto para empezar.</div>
+
+                @if (await Permisos.CanAsync(User, "PRODUCTOS_CREAR"))
+                {
+                    <div class="mt-4">
+                        <a asp-action="Create"
+                           class="inline-flex items-center gap-2 rounded-2xl bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700">
+                            + Nuevo producto
+                        </a>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    /* line-clamp básico sin plugin */
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+</style>
