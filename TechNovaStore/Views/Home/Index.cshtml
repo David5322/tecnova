@@ -1,0 +1,48 @@
+﻿@{
+    ViewData["Title"] = "Inicio";
+}
+
+<div class="text-center mt-5">
+    <h1 class="display-4"> Tecnova vss </h1>
+    <p class="lead">   </p>
+</div>
+
+
+
+<div class="row mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 mb-3">
+           <div class="card shadow-sm p-4 text-center">
+            <h4>Productos</h4>
+            <p>Administra el inventario.</p>
+            <a asp-controller="Productoes" asp-action="Index" class="btn btn-primary w-100">
+                Ir a Productos
+            </a>
+           </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+       <div class="col-md-8 mb-3">
+          <div class="card shadow-sm p-4 text-center">
+            <h4>Ventas</h4>
+            <p>Registra y consulta las ventas.</p>
+            <a asp-controller="ventas" asp-action="Index" class="btn btn-primary w-100">
+                Ir a Ventas
+            </a>
+          </div>
+       </div>
+    </div>
+
+    <div class="row justify-content-center">
+       <div class="col-md-8 mb-3">
+          <div class="card shadow-sm p-4 text-center">
+            <h4>Clientes</h4>
+            <p>Gestiona la información de tus clientes.</p>
+            <a asp-controller="clientes" asp-action="Index" class="btn btn-primary w-100">
+                Ir a Clientes
+            </a>
+          </div>
+       </div>
+    </div>
+</div>

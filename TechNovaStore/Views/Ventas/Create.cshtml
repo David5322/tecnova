@@ -1,0 +1,232 @@
+﻿@{
+    ViewData["Title"] = "Registrar Venta";
+}
+
+<div class="container mt-4">
+
+    <div class="card shadow p-4 mb-4">
+        <h2 class="mb-3 text-center">Registrar Venta</h2>
+
+        <form asp-action="Create" method="post">
+
+            <!-- ID CLIENTE -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">ID del Cliente</label>
+                <input type="number" id="clienteIdInput" class="form-control"
+                       placeholder="Ingrese el ID del cliente" />
+                <small class="text-muted">
+                    Use el ID si hay clientes con el mismo nombre
+                </small>
+            </div>
+
+            <!-- Selección de Cliente -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">Cliente</label>
+                <select class="form-select form-select-lg" name="ClienteId" id="clienteSelect" required>
+                    <option value="">-- Seleccione un cliente --</option>
+                    @foreach (var c in ViewBag.Clientes)
+                    {
+                        <option value="@c.Id">
+                            @c.Id - @c.Nombre
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <!-- Card de productos -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="m-0">Productos en la venta</h5>
+                    <button type="button" id="agregar" class="btn btn-success btn-sm">
+                        + Añadir Producto
+                    </button>
+                </div>
+
+                <div class="card-body" id="productos-container">
+
+                    <!-- Primera fila de productos -->
+                    <div class="row g-3 align-items-center producto-row mb-3">
+
+                        <!-- Producto -->
+                        <div class="col-md-6">
+                            <label class="form-label">Producto</label>
+                            <select class="form-select producto-select" name="ProductoId[]" required>
+                                <option value="">Seleccione un producto</option>
+                                @foreach (var p in ViewBag.Productos)
+                                {
+                                    <option value="@p.Id"
+                                            data-precio="@p.PrecioUnitario"
+                                            data-stock="@p.Stock">
+                                        @p.Nombre (Stock: @p.Stock)
+                                    </option>
+                                }
+                            </select>
+                        </div>
+
+                        <!-- Cantidad -->
+                        <div class="col-md-3">
+                            <label class="form-label">Cantidad</label>
+                            <input type="number" class="form-control cantidad-input"
+                                   name="Cantidad[]" min="1" required />
+                        </div>
+
+                        <!-- Subtotal + quitar -->
+                        <div class="col-md-3">
+                            <div class="row g-2">
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Subtotal</label>
+                                    <input type="text" class="form-control subtotal" value="0" readonly />
+                                </div>
+
+                                <div class="col-md-6 text-center">
+                                    <label class="form-label d-block">Quitar</label>
+                                    <button type="button" class="btn btn-outline-danger remove-product">
+                                        Eliminar
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOTAL GENERAL -->
+            <div class="mb-4">
+                <h4>Total de la venta: $<span id="total-general">0</span></h4>
+            </div>
+
+            <!-- Botones principales -->
+            <div class="d-flex gap-3">
+                <button type="submit" class="btn btn-primary px-4">Guardar Venta</button>
+                <a asp-action="Index" class="btn btn-secondary px-4">Volver</a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+
+    /* ================= CLIENTE POR ID ================= */
+    document.getElementById("clienteIdInput").addEventListener("change", function () {
+
+        let idIngresado = this.value;
+        let select = document.getElementById("clienteSelect");
+        let encontrado = false;
+
+        for (let option of select.options) {
+            if (option.value === idIngresado) {
+                option.selected = true;
+                encontrado = true;
+                break;
+            }
+        }
+
+        if (!encontrado && idIngresado !== "") {
+            alert("⚠ No existe un cliente con ese ID");
+            select.selectedIndex = 0;
+        }
+    });
+
+    /* ================= TOTALES ================= */
+    function calcularTotales() {
+        let totalGeneral = 0;
+
+        document.querySelectorAll(".producto-row").forEach(row => {
+
+            let select = row.querySelector(".producto-select");
+            let cantidad = parseFloat(row.querySelector(".cantidad-input").value) || 0;
+            let subtotalInput = row.querySelector(".subtotal");
+
+            let precio = 0;
+            if (select.selectedIndex > 0) {
+                precio = parseFloat(select.options[select.selectedIndex].getAttribute("data-precio"));
+            }
+
+            let subtotal = precio * cantidad;
+            subtotalInput.value = subtotal.toFixed(2);
+            totalGeneral += subtotal;
+        });
+
+        document.getElementById("total-general").textContent = totalGeneral.toFixed(2);
+    }
+
+    function cantidadTotalUsada(productoId) {
+        let total = 0;
+        document.querySelectorAll(".producto-row").forEach(row => {
+            let sel = row.querySelector(".producto-select");
+            let cant = parseInt(row.querySelector(".cantidad-input").value) || 0;
+            if (sel.value == productoId) total += cant;
+        });
+        return total;
+    }
+
+    /* ================= AGREGAR FILA ================= */
+    document.getElementById("agregar").addEventListener("click", function () {
+        const fila = document.querySelector(".producto-row").cloneNode(true);
+        fila.querySelector(".producto-select").selectedIndex = 0;
+        fila.querySelector(".cantidad-input").value = "";
+        fila.querySelector(".subtotal").value = "0";
+        document.getElementById("productos-container").appendChild(fila);
+    });
+
+    /* ================= ELIMINAR FILA ================= */
+    document.addEventListener("click", function (e) {
+        if (e.target.classList.contains("remove-product")) {
+            const filas = document.querySelectorAll(".producto-row");
+            if (filas.length > 1) {
+                e.target.closest(".producto-row").remove();
+                calcularTotales();
+            }
+        }
+    });
+
+    /* ================= VALIDACIONES ================= */
+    document.addEventListener("input", function (e) {
+
+        if (e.target.classList.contains("producto-select")) {
+            let elegido = e.target.value;
+            if (elegido !== "") {
+                let rep = 0;
+                document.querySelectorAll(".producto-select").forEach(sel => {
+                    if (sel.value == elegido) rep++;
+                });
+                if (rep > 1) {
+                    alert("⚠ Este producto ya está agregado en otra línea.");
+                    e.target.value = "";
+                    return;
+                }
+            }
+            calcularTotales();
+        }
+
+        if (e.target.classList.contains("cantidad-input")) {
+
+            let row = e.target.closest(".producto-row");
+            let select = row.querySelector(".producto-select");
+            let productoId = select.value;
+            if (!productoId) return;
+
+            let stock = parseInt(select.options[select.selectedIndex].getAttribute("data-stock"));
+            let cantidadIngresada = parseInt(e.target.value) || 0;
+            let totalAntes = cantidadTotalUsada(productoId) - cantidadIngresada;
+
+            if (cantidadIngresada + totalAntes > stock) {
+                let disponible = stock - totalAntes;
+                alert("⚠ No es posible agregar más unidades. Stock disponible: " + disponible);
+                e.target.value = disponible > 0 ? disponible : 0;
+            }
+
+            calcularTotales();
+        }
+    });
+
+</script>
+
+
+
+
+

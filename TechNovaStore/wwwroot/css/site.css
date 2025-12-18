@@ -1,0 +1,82 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+/* Header gris oscuro */
+.nav-gris {
+    background-color: rgba(0, 30, 100, 0.60) !important; /* gris oscuro */
+}
+
+.nav-gris .navbar-brand,
+    .nav-gris .nav-link {
+        color: white !important;
+}
+.nav-gris .nav-link:hover {
+            color: #D0D0D0 !important; /* hover gris claro */
+}
+
+/* Fondo general gris clarito */
+body {
+    background-color: rgba(0, 30, 100, 0.45) !important; /* gris clarito */
+}
+
+
+
+
+/* === TARJETAS DE INICIO (Clientes / Productos / Ventas) === */
+.card-custom {
+    width: 360px;
+    height: 240px;
+    border-radius: 18px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: white;
+    /* Sombra azul oscuro */
+    box-shadow: 0px 6px 20px rgba(0, 30, 100, 0.45);
+    transition: 0.25s ease;
+}
+
+    /* Hover (se levanta y aumenta la sombra) */
+    .card-custom:hover {
+        transform: translateY(-6px);
+        box-shadow: 0px 12px 28px rgba(0, 30, 100, 0.60);
+    }
+
+    /* Botón azul */
+    .card-custom .btn {
+        background-color: #0d6efd !important;
+        border-color: #0d6efd !important;
+        border-radius: 10px;
+        padding: 10px 20px;
+        font-size: 15px;
+    }
+
+/* === INPUT AZUL (REPARADO) === */
+.form-control:focus {
+    border-color: #0d6efd !important;
+    box-shadow: 0 0 0 0.15rem rgba(0, 86, 179, 0.45) !important;
+}
+

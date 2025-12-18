@@ -1,0 +1,100 @@
+﻿@model IEnumerable<tecnova.Models.Producto>
+
+@{
+    ViewData["Title"] = "Productos";
+}
+
+<div class="container mt-4">
+
+    <!-- Encabezado -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="m-0">Gestión de Productos</h2>
+        <a asp-action="Create" class="btn btn-success">
+            + Agregar Producto
+        </a>
+    </div>
+
+    <!-- Buscador -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form asp-action="Index" method="get">
+                <div class="row g-3">
+                    <div class="col-md-10">
+                        <input type="text" name="searchString" class="form-control" placeholder="Buscar por nombre, código o descripción...">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            Buscar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="card shadow">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle m-0">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Código</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Nombre</td>
+                                <td>@item.Descripcion</td>
+                                <td>@item.PrecioUnitario.ToString("C")</td>
+                                <td>@item.Stock</td>
+                                <td>@item.Codigo</td>
+                                <td class="text-center">
+
+                                    <div class="btn-group" role="group">
+
+                                        <a asp-action="Details" asp-route-id="@item.Id"
+                                           class="btn btn-outline-info btn-sm">
+                                            Ver
+                                        </a>
+
+                                        <a asp-action="Edit" asp-route-id="@item.Id"
+                                           class="btn btn-outline-warning btn-sm">
+                                            Editar
+                                        </a>
+
+                                        <a asp-action="Delete" asp-route-id="@item.Id"
+                                           class="btn btn-outline-danger btn-sm"
+                                           onclick="return confirm('¿Deseas eliminar este producto?');">
+                                            Eliminar
+                                        </a>
+
+                                    </div>
+
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center py-3 text-muted">
+                                No se encontraron productos.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+

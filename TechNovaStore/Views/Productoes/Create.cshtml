@@ -1,0 +1,68 @@
+﻿@model tecnova.Models.Producto
+
+@{
+    ViewData["Title"] = "Crear Producto";
+}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">Registrar Nuevo Producto</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <form asp-action="Create">
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label asp-for="Nombre" class="form-label fw-bold"></label>
+                        <input asp-for="Nombre" class="form-control" placeholder="Nombre del producto" />
+                        <span asp-validation-for="Nombre" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Codigo" class="form-label fw-bold"></label>
+                        <input asp-for="Codigo" class="form-control" placeholder="Código único" />
+                        <span asp-validation-for="Codigo" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label asp-for="Descripcion" class="form-label fw-bold"></label>
+                        <input asp-for="Descripcion" class="form-control" placeholder="Descripción breve del producto" />
+                        <span asp-validation-for="Descripcion" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="PrecioUnitario" class="form-label fw-bold"></label>
+                        <input asp-for="PrecioUnitario" class="form-control" placeholder="Precio en COP" />
+                        <span asp-validation-for="PrecioUnitario" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Stock" class="form-label fw-bold"></label>
+                        <input asp-for="Stock" class="form-control" placeholder="Cantidad disponible" />
+                        <span asp-validation-for="Stock" class="text-danger"></span>
+                    </div>
+
+                </div>
+
+                <div class="mt-4 d-flex gap-3">
+                    <button type="submit" class="btn btn-primary px-4">Guardar Producto</button>
+                    <a asp-action="Index" class="btn btn-secondary px-4">Volver</a>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

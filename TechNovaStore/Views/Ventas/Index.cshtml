@@ -1,0 +1,105 @@
+﻿@model IEnumerable<tecnova.Models.Venta>
+
+@{
+    ViewData["Title"] = "Ventas";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="m-0">Historial de Ventas</h2>
+        <a asp-action="Create" class="btn btn-success">
+            + Registrar Venta
+        </a>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form method="get" asp-action="Index">
+
+                <div class="row g-3">
+
+                    <!-- BUSCAR POR ID -->
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">ID Cliente</label>
+                        <input type="text" name="searchClienteId" class="form-control"
+                               placeholder="ID del cliente..." />
+                    </div>
+
+                    <!-- BUSCAR POR NOMBRE -->
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Nombre cliente</label>
+                        <input type="text" name="searchCliente" class="form-control"
+                               placeholder="Nombre del cliente..." />
+                    </div>
+
+                    <!-- FECHA -->
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Fecha</label>
+                        <input type="date" name="fecha" class="form-control" />
+                    </div>
+
+                    <!-- BOTÓN -->
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-primary w-100">
+                            Buscar
+                        </button>
+                    </div>
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="card shadow">
+        <div class="card-body p-0">
+
+            <table class="table table-hover m-0">
+                <thead class="table-primary">
+                    <tr>
+                        <th>ID Cliente</th>
+                        <th>Cliente</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var venta in Model)
+                        {
+                            <tr>
+                                <td>@venta.Cliente.Identificacion</td>
+                                <td>@venta.Cliente.Nombre</td>
+                                <td>@venta.Fecha.ToString("dd/MM/yyyy - HH:mm")</td>
+                                <td>@venta.Total.ToString("C")</td>
+                                <td class="text-center">
+                                    <a asp-action="Details" asp-route-id="@venta.Id"
+                                       class="btn btn-outline-info btn-sm">
+                                        Ver Detalles
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center py-3 text-muted">
+                                No se encontraron ventas registradas.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+
